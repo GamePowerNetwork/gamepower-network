@@ -1,5 +1,5 @@
 use sp_core::{Pair, Public, sr25519};
-use node_template_runtime::{
+use gamepower_runtime::{
 	AccountId, AuraConfig, BalancesConfig, GenesisConfig, GrandpaConfig,
 	SudoConfig, SystemConfig, WASM_BINARY, Signature
 };
@@ -7,6 +7,7 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_finality_grandpa::AuthorityId as GrandpaId;
 use sp_runtime::traits::{Verify, IdentifyAccount};
 use sc_service::ChainType;
+use serde_json::map::Map;
 
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
@@ -39,13 +40,18 @@ pub fn authority_keys_from_seed(s: &str) -> (AuraId, GrandpaId) {
 }
 
 pub fn development_config() -> Result<ChainSpec, String> {
-	let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
+	let wasm_binary = WASM_BINARY.ok_or_else(|| "GamePower wasm not available".to_string())?;
+
+	let mut properties = Map::new();
+	properties.insert("ss58Format".into(), 100.into());
+	properties.insert("tokenSymbol".into(), "GP".into());
+	properties.insert("tokenDecimals".into(), 8.into());
 
 	Ok(ChainSpec::from_genesis(
 		// Name
-		"Development",
+		"GamePower Network",
 		// ID
-		"dev",
+		"gamepower",
 		ChainType::Development,
 		move || testnet_genesis(
 			wasm_binary,
@@ -71,7 +77,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
 		// Protocol ID
 		None,
 		// Properties
-		None,
+		Some(properties),
 		// Extensions
 		None,
 	))
