@@ -2,7 +2,7 @@
 # This script meant to be run on Unix/Linux based systems
 set -e
 
-echo "*** Start Substrate node template ***"
+echo "*** Start GamePower Node ***"
 
 cd $(dirname ${BASH_SOURCE[0]})/..
 

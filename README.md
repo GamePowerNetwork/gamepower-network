@@ -1,4 +1,4 @@
-# Substrate Node Template
+# GamePower Node
 
 [![Try on playground](https://img.shields.io/badge/Playground-Node_Template-brightgreen?logo=Parity%20Substrate)](https://playground.substrate.dev/?deploy=node-template)
 
@@ -6,7 +6,7 @@ A fresh FRAME-based [Substrate](https://www.substrate.io/) node, ready for hacki
 
 ## Getting Started
 
-Follow the steps below to get started with the Node Template, or get it up and running right from your browser 
+Follow the steps below to get started with the GamePower Node, or get it up and running right from your browser 
 in just a few clicks using [Playground](https://playground.substrate.dev/) :hammer_and_wrench:
 
 ### Rust Setup
@@ -15,7 +15,7 @@ First, complete the [basic Rust setup instructions](./doc/rust-setup.md).
 
 ### Run
 
-Use Rust's native `cargo` command to build and launch the template node:
+Use Rust's native `cargo` command to build and launch the GamePower node:
 
 ```sh
 cargo run --release -- --dev --tmp
@@ -36,7 +36,7 @@ Once the project has been built, the following command can be used to explore al
 subcommands:
 
 ```sh
-./target/release/node-template -h
+./target/release/gamepower -h
 ```
 
 ## Run
@@ -50,19 +50,19 @@ node.
 This command will start the single-node development chain with persistent state:
 
 ```bash
-./target/release/node-template --dev
+./target/release/gamepower --dev
 ```
 
 Purge the development chain's state:
 
 ```bash
-./target/release/node-template purge-chain --dev
+./target/release/gamepower purge-chain --dev
 ```
 
 Start the development chain with detailed logging:
 
 ```bash
-RUST_LOG=debug RUST_BACKTRACE=1 ./target/release/node-template -lruntime=debug --dev
+RUST_LOG=debug RUST_BACKTRACE=1 ./target/release/gamepower -lruntime=debug --dev
 ```
 
 ### Multi-Node Local Testnet
@@ -70,7 +70,7 @@ RUST_LOG=debug RUST_BACKTRACE=1 ./target/release/node-template -lruntime=debug -
 If you want to see the multi-node consensus algorithm in action, refer to
 [our Start a Private Network tutorial](https://substrate.dev/docs/en/tutorials/start-a-private-network/).
 
-## Template Structure
+## GamePower Structure
 
 A Substrate project such as this consists of a number of components that are spread across a few
 directories.
@@ -113,7 +113,7 @@ After the node has been [built](#build), refer to the embedded documentation to 
 capabilities and configuration parameters that it exposes:
 
 ```shell
-./target/release/node-template --help
+./target/release/gamepower --help
 ```
 
 ### Runtime
@@ -173,15 +173,15 @@ Then run the following command to start a single node development chain.
 ```
 
 This command will firstly compile your code, and then start a local development network. You can
-also replace the default command (`cargo build --release && ./target/release/node-template --dev --ws-external`)
+also replace the default command (`cargo build --release && ./target/release/gamepower --dev --ws-external`)
 by appending your own. A few useful ones are as follow.
 
 ```bash
 # Run Substrate node without re-compiling
-./scripts/docker_run.sh ./target/release/node-template --dev --ws-external
+./scripts/docker_run.sh ./target/release/gamepower --dev --ws-external
 
 # Purge the local dev chain
-./scripts/docker_run.sh ./target/release/node-template purge-chain --dev
+./scripts/docker_run.sh ./target/release/gamepower purge-chain --dev
 
 # Check whether the code is compilable
 ./scripts/docker_run.sh cargo check
