@@ -3,11 +3,12 @@ use gamepower_runtime::{
 	AccountId, AuraConfig, BalancesConfig, GenesisConfig, GrandpaConfig,
 	SudoConfig, SystemConfig, WASM_BINARY, Signature
 };
+
+use hex_literal::hex;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_finality_grandpa::AuthorityId as GrandpaId;
 use sp_runtime::traits::{Verify, IdentifyAccount};
-use sc_service::ChainType;
-use serde_json::map::Map;
+use sc_service::{ChainType, Properties};
 
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
@@ -39,12 +40,9 @@ pub fn authority_keys_from_seed(s: &str) -> (AuraId, GrandpaId) {
 	)
 }
 
+
 pub fn development_config() -> Result<ChainSpec, String> {
 	let wasm_binary = WASM_BINARY.ok_or_else(|| "GamePower wasm not available".to_string())?;
-
-	let mut properties = Map::new();
-	properties.insert("tokenSymbol".into(), "GP".into());
-	properties.insert("tokenDecimals".into(), 8.into());
 
 	Ok(ChainSpec::from_genesis(
 		// Name
@@ -59,13 +57,11 @@ pub fn development_config() -> Result<ChainSpec, String> {
 				authority_keys_from_seed("Alice"),
 			],
 			// Sudo account
-			get_account_id_from_seed::<sr25519::Public>("Alice"),
+			//get_account_id_from_seed::<sr25519::Public>("Alice"),
+			hex!["1cfa318a2f15c926f9eaecbee7cdfc3d064b93b49e75e8f1b02e8679304a251b"].into(),
 			// Pre-funded accounts
 			vec![
-				get_account_id_from_seed::<sr25519::Public>("Alice"),
-				get_account_id_from_seed::<sr25519::Public>("Bob"),
-				get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
-				get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
+				hex!["1cfa318a2f15c926f9eaecbee7cdfc3d064b93b49e75e8f1b02e8679304a251b"].into()
 			],
 			true,
 		),
@@ -76,7 +72,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
 		// Protocol ID
 		None,
 		// Properties
-		Some(properties),
+		Some(gamepower_properties()),
 		// Extensions
 		None,
 	))
@@ -90,7 +86,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 		"GamePower Network",
 		// ID
 		"gamepower",
-		ChainType::Local,
+		ChainType::Live,
 		move || testnet_genesis(
 			wasm_binary,
 			// Initial PoA authorities
@@ -99,21 +95,11 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 				authority_keys_from_seed("Bob"),
 			],
 			// Sudo account
-			get_account_id_from_seed::<sr25519::Public>("Alice"),
+			//get_account_id_from_seed::<sr25519::Public>("Alice"),
+			hex!["1cfa318a2f15c926f9eaecbee7cdfc3d064b93b49e75e8f1b02e8679304a251b"].into(),
 			// Pre-funded accounts
 			vec![
-				get_account_id_from_seed::<sr25519::Public>("Alice"),
-				get_account_id_from_seed::<sr25519::Public>("Bob"),
-				get_account_id_from_seed::<sr25519::Public>("Charlie"),
-				get_account_id_from_seed::<sr25519::Public>("Dave"),
-				get_account_id_from_seed::<sr25519::Public>("Eve"),
-				get_account_id_from_seed::<sr25519::Public>("Ferdie"),
-				get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
-				get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
-				get_account_id_from_seed::<sr25519::Public>("Charlie//stash"),
-				get_account_id_from_seed::<sr25519::Public>("Dave//stash"),
-				get_account_id_from_seed::<sr25519::Public>("Eve//stash"),
-				get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
+				hex!["1cfa318a2f15c926f9eaecbee7cdfc3d064b93b49e75e8f1b02e8679304a251b"].into()
 			],
 			true,
 		),
@@ -124,7 +110,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 		// Protocol ID
 		None,
 		// Properties
-		None,
+		Some(gamepower_properties()),
 		// Extensions
 		None,
 	))
@@ -159,4 +145,14 @@ fn testnet_genesis(
 			key: root_key,
 		}),
 	}
+}
+
+pub fn gamepower_properties() -> Properties {
+	let mut properties = Properties::new();
+
+	properties.insert("ss58Format".into(), 100.into());
+	properties.insert("tokenDecimals".into(), 8.into());
+	properties.insert("tokenSymbol".into(), "GP".into());
+
+	properties
 }
