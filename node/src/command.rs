@@ -23,7 +23,7 @@ use gamepower_runtime::Block;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
-		"Substrate Node".into()
+		"GamePower Node".into()
 	}
 
 	fn impl_version() -> String {
@@ -39,11 +39,11 @@ impl SubstrateCli for Cli {
 	}
 
 	fn support_url() -> String {
-		"support.anonymous.an".into()
+		"https://www.gamepower.network".into()
 	}
 
 	fn copyright_start_year() -> i32 {
-		2017
+		2021
 	}
 
 	fn load_spec(&self, id: &str) -> Result<Box<dyn sc_service::ChainSpec>, String> {
