@@ -43,7 +43,6 @@ pub fn development_config() -> Result<ChainSpec, String> {
 	let wasm_binary = WASM_BINARY.ok_or_else(|| "GamePower wasm not available".to_string())?;
 
 	let mut properties = Map::new();
-	properties.insert("ss58Format".into(), 100.into());
 	properties.insert("tokenSymbol".into(), "GP".into());
 	properties.insert("tokenDecimals".into(), 8.into());
 
@@ -88,9 +87,9 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 
 	Ok(ChainSpec::from_genesis(
 		// Name
-		"Local Testnet",
+		"GamePower Network",
 		// ID
-		"local_testnet",
+		"gamepower",
 		ChainType::Local,
 		move || testnet_genesis(
 			wasm_binary,
