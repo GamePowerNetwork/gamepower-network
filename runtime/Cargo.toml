@@ -44,6 +44,7 @@ sp-session = { default-features = false, version = '3.0.0' }
 sp-std = { default-features = false, version = '3.0.0' }
 sp-transaction-pool = { default-features = false, version = '3.0.0' }
 sp-version = { default-features = false, version = '3.0.0' }
+pallet-scheduler = { default-features = false, version = '3.0.0' }
 
 # Orml pacakges
 orml-currencies = { default-features = false, version = '0.4.0' }
@@ -84,6 +85,7 @@ std = [
     'pallet-timestamp/std',
     'pallet-transaction-payment-rpc-runtime-api/std',
     'pallet-transaction-payment/std',
+    'pallet-scheduler/std',
     'serde',
     'sp-api/std',
     'sp-block-builder/std',
