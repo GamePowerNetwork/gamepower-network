@@ -53,7 +53,8 @@ pub fn development_config() -> Result<ChainSpec, String> {
 			wasm_binary,
 			// Initial PoA authorities
 			vec![
-				authority_keys_from_seed("0x604d4937a7730daaea7a5b641d7e143c3977c751742aa51bc089ebf82da3abcb"),
+				authority_keys_from_seed("Alice"),
+				authority_keys_from_seed("Bob"),
 			],
 			// Sudo account
 			get_account_id_from_seed::<sr25519::Public>("Alice"),
