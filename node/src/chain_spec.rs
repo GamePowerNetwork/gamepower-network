@@ -4,7 +4,6 @@ use gamepower_runtime::{
 	SudoConfig, SystemConfig, WASM_BINARY, Signature
 };
 
-use hex_literal::hex;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_finality_grandpa::AuthorityId as GrandpaId;
 use sp_runtime::traits::{Verify, IdentifyAccount};
@@ -54,14 +53,14 @@ pub fn development_config() -> Result<ChainSpec, String> {
 			wasm_binary,
 			// Initial PoA authorities
 			vec![
-				authority_keys_from_seed("Alice"),
+				authority_keys_from_seed("0x604d4937a7730daaea7a5b641d7e143c3977c751742aa51bc089ebf82da3abcb"),
 			],
 			// Sudo account
-			//get_account_id_from_seed::<sr25519::Public>("Alice"),
-			hex!["1cfa318a2f15c926f9eaecbee7cdfc3d064b93b49e75e8f1b02e8679304a251b"].into(),
+			get_account_id_from_seed::<sr25519::Public>("Alice"),
+			//hex!["1cfa318a2f15c926f9eaecbee7cdfc3d064b93b49e75e8f1b02e8679304a251b"].into(),
 			// Pre-funded accounts
 			vec![
-				hex!["1cfa318a2f15c926f9eaecbee7cdfc3d064b93b49e75e8f1b02e8679304a251b"].into()
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
 			],
 			true,
 		),
@@ -95,11 +94,10 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 				authority_keys_from_seed("Bob"),
 			],
 			// Sudo account
-			//get_account_id_from_seed::<sr25519::Public>("Alice"),
-			hex!["1cfa318a2f15c926f9eaecbee7cdfc3d064b93b49e75e8f1b02e8679304a251b"].into(),
+			get_account_id_from_seed::<sr25519::Public>("Alice"),
 			// Pre-funded accounts
 			vec![
-				hex!["1cfa318a2f15c926f9eaecbee7cdfc3d064b93b49e75e8f1b02e8679304a251b"].into()
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
 			],
 			true,
 		),
@@ -150,7 +148,6 @@ fn testnet_genesis(
 pub fn gamepower_properties() -> Properties {
 	let mut properties = Properties::new();
 
-	properties.insert("ss58Format".into(), 100.into());
 	properties.insert("tokenDecimals".into(), 8.into());
 	properties.insert("tokenSymbol".into(), "GP".into());
 
