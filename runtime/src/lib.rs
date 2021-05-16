@@ -42,6 +42,7 @@ use pallet_transaction_payment::CurrencyAdapter;
 
 /// Import the template pallet.
 pub use pallet_template;
+pub use lootbox;
 
 // A few exports that help ease life for downstream crates.
 pub use constants::currency::*;
