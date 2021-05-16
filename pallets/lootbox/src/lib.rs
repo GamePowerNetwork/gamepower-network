@@ -181,7 +181,7 @@ pub mod pallet {
 
   #[pallet::storage]
 	#[pallet::getter(fn get_series)]
-  pub(super) type Series<T: Config> = StorageMap<_, Blake2_128Concat, SeriesId, SeriesDataOf<T>, ValueQuery>;
+  pub(super) type Series<T: Config> = StorageMap<_, Blake2_128Concat, SeriesId, Option<SeriesDataOf<T>>>;
 
   #[pallet::storage]
 	#[pallet::getter(fn get_class_series)]
@@ -272,9 +272,9 @@ pub mod pallet {
         name,
         owner: sender.clone(),
         metadata,
-    };
+      };
 
-    Series::<T>::insert(next_series_id, series_data);
+      <Series<T>>::insert(next_series_id, series_data);
 
       Ok(next_series_id)
     }
