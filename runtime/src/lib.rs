@@ -15,7 +15,6 @@ use sp_runtime::{
 use sp_runtime::traits::{
 	BlakeTwo256, Block as BlockT, AccountIdLookup, Verify, IdentifyAccount, NumberFor,
 };
-use sp_runtime::ModuleId;
 use sp_api::impl_runtime_apis;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use pallet_grandpa::{AuthorityId as GrandpaId, AuthorityList as GrandpaAuthorityList};
@@ -31,7 +30,7 @@ pub use pallet_timestamp::Call as TimestampCall;
 pub use pallet_balances::Call as BalancesCall;
 pub use sp_runtime::{Permill, Perbill};
 pub use frame_support::{
-	construct_runtime, parameter_types, StorageValue,
+	construct_runtime, parameter_types, StorageValue, PalletId,
 	traits::{KeyOwnerProofSystem, Randomness},
 	weights::{
 		Weight, IdentityFee,
@@ -39,10 +38,9 @@ pub use frame_support::{
 	},
 };
 use pallet_transaction_payment::CurrencyAdapter;
-use gamepower_primitives::{WalletClassData, WalletAssetData};
 
 /// Import the template pallet.
-pub use gamepower_wallet;
+//pub use gamepower_wallet;
 
 // A few exports that help ease life for downstream crates.
 pub use constants::currency::*;
@@ -203,6 +201,8 @@ impl frame_system::Config for Runtime {
 	type SystemWeightInfo = ();
 	/// This is used as an identifier of the chain. 42 is the generic substrate prefix.
 	type SS58Prefix = SS58Prefix;
+	/// The set code logic, just the default since we're not a parachain.
+	type OnSetCode = ();
 }
 
 impl pallet_aura::Config for Runtime {
@@ -273,25 +273,30 @@ impl pallet_sudo::Config for Runtime {
 	type Call = Call;
 }
 
+/*
 impl gamepower_wallet_integration::Config for Runtime {
 	type Event = Event;
 }
+*/
 
+/*
 impl orml_nft::Config for Runtime {
 	type ClassId = u32;
 	type TokenId = u64;
 	type ClassData = WalletClassData;
 	type TokenData = WalletAssetData;
 }
+*/
 
 parameter_types! {
 	pub AllowTransfer: bool = true;
 	pub AllowBurn: bool = true;
 	pub AllowEscrow: bool = true;
 	pub AllowClaim: bool = true;
-	pub const WalletModuleId: ModuleId = ModuleId(*b"gpwallet");
+	pub const WalletPalletId: PalletId = PalletId(*b"gpwallet");
 }
 
+/*
 impl gamepower_wallet::Config for Runtime {
 	type Event = Event;
 	type Transfer = GamePowerWalletIntegration;
@@ -304,6 +309,7 @@ impl gamepower_wallet::Config for Runtime {
 	type Currency = Balances;
 	type ModuleId = WalletModuleId;
 }
+*/
 
 /// Define the types required by the Scheduler pallet.
 parameter_types! {
@@ -331,21 +337,21 @@ construct_runtime!(
 		NodeBlock = opaque::Block,
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
-		System: frame_system::{Module, Call, Config, Storage, Event<T>},
-		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Module, Call, Storage},
-		Timestamp: pallet_timestamp::{Module, Call, Storage, Inherent},
-		Aura: pallet_aura::{Module, Config<T>},
-		Grandpa: pallet_grandpa::{Module, Call, Storage, Config, Event},
-		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>},
-		TransactionPayment: pallet_transaction_payment::{Module, Storage},
-		Sudo: pallet_sudo::{Module, Call, Config<T>, Storage, Event<T>},
-		Scheduler: pallet_scheduler::{Module, Call, Storage, Event<T>},
+		System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
+		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Pallet, Call, Storage},
+		Timestamp: pallet_timestamp::{Pallet, Call, Storage, Inherent},
+		Aura: pallet_aura::{Pallet, Config<T>},
+		Grandpa: pallet_grandpa::{Pallet, Call, Storage, Config, Event},
+		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
+		TransactionPayment: pallet_transaction_payment::{Pallet, Storage},
+		Sudo: pallet_sudo::{Pallet, Call, Config<T>, Storage, Event<T>},
+		Scheduler: pallet_scheduler::{Pallet, Call, Storage, Event<T>},
 
-		OrmlNFT: orml_nft::{Module ,Storage},
-		GamePowerWallet: gamepower_wallet::{Module, Call, Storage, Event<T>},
+		//OrmlNFT: orml_nft::{Pallet ,Storage},
+		//GamePowerWallet: gamepower_wallet::{Module, Call, Storage, Event<T>},
 
 		// NFT Example
-		GamePowerWalletIntegration: gamepower_wallet_integration::{Module, Call, Event<T>},
+		//GamePowerWalletIntegration: gamepower_wallet_integration::{Module, Call, Event<T>},
 	}
 );
 
@@ -379,7 +385,7 @@ pub type Executive = frame_executive::Executive<
 	Block,
 	frame_system::ChainContext<Runtime>,
 	Runtime,
-	AllModules,
+	AllPallets,
 >;
 
 impl_runtime_apis! {
@@ -424,7 +430,7 @@ impl_runtime_apis! {
 		}
 
 		fn random_seed() -> <Block as BlockT>::Hash {
-			RandomnessCollectiveFlip::random_seed()
+			RandomnessCollectiveFlip::random_seed().0
 		}
 	}
 
@@ -444,8 +450,8 @@ impl_runtime_apis! {
 	}
 
 	impl sp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
-		fn slot_duration() -> u64 {
-			Aura::slot_duration()
+		fn slot_duration() -> sp_consensus_aura::SlotDuration {
+			sp_consensus_aura::SlotDuration::from_millis(Aura::slot_duration())
 		}
 
 		fn authorities() -> Vec<AuraId> {
