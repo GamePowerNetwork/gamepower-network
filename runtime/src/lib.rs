@@ -39,13 +39,13 @@ pub use frame_support::{
 	},
 };
 use pallet_transaction_payment::CurrencyAdapter;
+use gamepower_primitives::{WalletClassData, WalletAssetData};
 
 /// Import the template pallet.
-pub use pallet_template;
+pub use gamepower_wallet;
 
 // A few exports that help ease life for downstream crates.
 pub use constants::currency::*;
-pub use primitives::{Balance, CurrencyId};
 
 mod constants;
 mod weights;
@@ -63,6 +63,9 @@ pub type AccountId = <<Signature as Verify>::Signer as IdentifyAccount>::Account
 /// The type for looking up accounts. We don't expect more than 4 billion of them, but you
 /// never know...
 pub type AccountIndex = u32;
+
+/// Balance of an account.
+pub type Balance = u128;
 
 /// Index of a transaction in the chain.
 pub type Index = u32;
@@ -108,7 +111,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	//   `spec_version`, and `authoring_version` are the same between Wasm and native.
 	// This value is set to 100 to notify Polkadot-JS App (https://polkadot.js.org/apps) to use
 	//   the compatible custom types.
-	spec_version: 101,
+	spec_version: 102,
 	impl_version: 1,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -120,7 +123,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 /// up by `pallet_aura` to implement `fn slot_duration()`.
 ///
 /// Change this to adjust the block time.
-pub const MILLISECS_PER_BLOCK: u64 = 3000;
+pub const MILLISECS_PER_BLOCK: u64 = 2000;
 
 pub const SLOT_DURATION: u64 = MILLISECS_PER_BLOCK;
 
@@ -226,10 +229,6 @@ impl pallet_grandpa::Config for Runtime {
 }
 
 parameter_types! {
-	pub const LootBoxModuleId: ModuleId = ModuleId(*b"nft/loot");
-}
-
-parameter_types! {
 	pub const MinimumPeriod: u64 = SLOT_DURATION / 2;
 }
 
@@ -242,7 +241,7 @@ impl pallet_timestamp::Config for Runtime {
 }
 
 parameter_types! {
-	pub const ExistentialDeposit: u128 = 1000;
+	pub const ExistentialDeposit: u128 = 500;
 	pub const MaxLocks: u32 = 50;
 }
 
@@ -274,30 +273,36 @@ impl pallet_sudo::Config for Runtime {
 	type Call = Call;
 }
 
-/// Configure the pallet-template in pallets/template.
-impl pallet_template::Config for Runtime {
+impl gamepower_wallet_integration::Config for Runtime {
 	type Event = Event;
-}
-
-parameter_types! {
-	pub CreateClassDeposit: Balance = 40 * CENTS;
-	pub CreateAssetDeposit: Balance = 4 * CENTS;
-}
-
-impl lootbox::Config for Runtime {
-	type Event = Event;
-	type CreateClassDeposit = CreateClassDeposit;
-	type CreateAssetDeposit = CreateAssetDeposit;
-	type Currency = Balances;
-	type WeightInfo = weights::module_lootbox::WeightInfo<Runtime>;
-	type ModuleId = LootBoxModuleId;
 }
 
 impl orml_nft::Config for Runtime {
 	type ClassId = u32;
 	type TokenId = u64;
-	type ClassData = lootbox::NftClassData<Balance>;
-	type TokenData = lootbox::NftAssetData<Balance>;
+	type ClassData = WalletClassData;
+	type TokenData = WalletAssetData;
+}
+
+parameter_types! {
+	pub AllowTransfer: bool = true;
+	pub AllowBurn: bool = true;
+	pub AllowEscrow: bool = true;
+	pub AllowClaim: bool = true;
+	pub const WalletModuleId: ModuleId = ModuleId(*b"gpwallet");
+}
+
+impl gamepower_wallet::Config for Runtime {
+	type Event = Event;
+	type Transfer = GamePowerWalletIntegration;
+	type Burn = GamePowerWalletIntegration;
+	type Claim = GamePowerWalletIntegration;
+	type AllowTransfer = AllowTransfer;
+	type AllowBurn = AllowBurn;
+	type AllowEscrow = AllowEscrow;
+	type AllowClaim = AllowClaim;
+	type Currency = Balances;
+	type ModuleId = WalletModuleId;
 }
 
 /// Define the types required by the Scheduler pallet.
@@ -334,12 +339,13 @@ construct_runtime!(
 		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>},
 		TransactionPayment: pallet_transaction_payment::{Module, Storage},
 		Sudo: pallet_sudo::{Module, Call, Config<T>, Storage, Event<T>},
-		// Include the custom logic from the pallet-template in the runtime.
-		TemplateModule: pallet_template::{Module, Call, Storage, Event<T>},
 		Scheduler: pallet_scheduler::{Module, Call, Storage, Event<T>},
 
 		OrmlNFT: orml_nft::{Module ,Storage},
-    LootBox: lootbox::{Module, Call ,Storage, Event<T>},
+		GamePowerWallet: gamepower_wallet::{Module, Call, Storage, Event<T>},
+
+		// NFT Example
+		GamePowerWalletIntegration: gamepower_wallet_integration::{Module, Call, Event<T>},
 	}
 );
 
@@ -535,7 +541,6 @@ impl_runtime_apis! {
 			add_benchmark!(params, batches, frame_system, SystemBench::<Runtime>);
 			add_benchmark!(params, batches, pallet_balances, Balances);
 			add_benchmark!(params, batches, pallet_timestamp, Timestamp);
-			add_benchmark!(params, batches, pallet_template, TemplateModule);
 
 			if batches.is_empty() { return Err("Benchmark not found for this pallet.".into()) }
 			Ok(batches)
