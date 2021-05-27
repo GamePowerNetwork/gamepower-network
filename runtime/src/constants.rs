@@ -1,5 +1,5 @@
 pub mod currency {
-  use primitives::Balance;
+  use gamepower_primitives::{ Balance };
 
   pub const DOLLARS: Balance = 1_000_000_000;
   pub const CENTS: Balance = DOLLARS / 10;
