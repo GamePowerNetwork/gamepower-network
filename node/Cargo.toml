@@ -47,6 +47,7 @@ sp-consensus = {version = '0.9.0', git = 'https://github.com/paritytech/substrat
 sp-consensus-aura = {version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 sp-core = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 sp-finality-grandpa = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
+sc-finality-grandpa-rpc = { git = "https://github.com/paritytech/substrate", branch = "master" }
 sp-inherents = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 sp-runtime = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 sp-transaction-pool = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
