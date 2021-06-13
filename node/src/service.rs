@@ -4,13 +4,11 @@ use std::{sync::Arc, time::Duration};
 use sc_client_api::{ExecutorProvider, RemoteBackend};
 use gamepower_runtime::{self, opaque::Block, RuntimeApi};
 use sc_service::{error::Error as ServiceError, Configuration, TaskManager};
-use sc_service::RpcHandlers;
 use sc_executor::native_executor_instance;
 pub use sc_executor::NativeExecutor;
 use sp_consensus_aura::sr25519::AuthorityPair as AuraPair;
 use sc_consensus_aura::{ImportQueueParams, StartAuraParams, SlotProportion};
 use sc_finality_grandpa::SharedVoterState;
-use sc_finality_grandpa::{self, FinalityProofProvider as GrandpaFinalityProofProvider};
 use sc_keystore::LocalKeystore;
 use sc_telemetry::{Telemetry, TelemetryWorker};
 use sp_consensus::SlotData;
@@ -32,10 +30,6 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 	sp_consensus::DefaultImportQueue<Block, FullClient>,
 	sc_transaction_pool::FullPool<Block, FullClient>,
 	(
-		impl Fn(
-			crate::rpc::DenyUnsafe,
-			crate::rpc::SubscriptionTaskExecutor,
-		) -> crate::rpc::RpcExtension,
 		sc_finality_grandpa::GrandpaBlockImport<FullBackend, Block, FullClient, FullSelectChain>,
 		sc_finality_grandpa::LinkHalf<Block, FullClient, FullSelectChain>,
 		Option<Telemetry>,
@@ -111,36 +105,6 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 		},
 	)?;
 
-	let justification_stream = grandpa_link.justification_stream();
-	let shared_authority_set = grandpa_link.shared_authority_set().clone();
-	let shared_voter_state = sc_finality_grandpa::SharedVoterState::empty();
-	let finality_proof_provider = GrandpaFinalityProofProvider::new_for_service(
-		backend.clone(),
-		Some(shared_authority_set.clone()),
-	);
-
-	let rpc_extensions_builder = {
-		let client = client.clone();
-		let pool = transaction_pool.clone();
-
-		Box::new(move |deny_unsafe, subscription_executor: crate::rpc::SubscriptionTaskExecutor| {
-			let deps = crate::rpc::FullDeps {
-				client: client.clone(),
-				pool: pool.clone(),
-				deny_unsafe,
-				grandpa: crate::rpc::GrandpaDeps {
-					shared_voter_state: shared_voter_state.clone(),
-					shared_authority_set: shared_authority_set.clone(),
-					justification_stream: justification_stream.clone(),
-					subscription_executor: subscription_executor.clone(),
-					finality_provider: finality_proof_provider.clone(),
-				},
-			};
-
-			crate::rpc::create_full(deps)
-		})
-	};
-
 	Ok(sc_service::PartialComponents {
 		client,
 		backend,
@@ -149,7 +113,7 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 		keystore_container,
 		select_chain,
 		transaction_pool,
-		other: (rpc_extensions_builder, grandpa_block_import, grandpa_link, telemetry),
+		other: (grandpa_block_import, grandpa_link, telemetry),
 	})
 }
 
@@ -161,10 +125,7 @@ fn remote_keystore(_url: &String) -> Result<Arc<LocalKeystore>, &'static str> {
 }
 
 /// Builds a new service for a full client.
-pub fn new_full(mut config: Configuration) -> Result<(
-	TaskManager,
-	RpcHandlers,
-), ServiceError> {
+pub fn new_full(mut config: Configuration) -> Result<TaskManager, ServiceError> {
 	let sc_service::PartialComponents {
 		client,
 		backend,
@@ -173,7 +134,7 @@ pub fn new_full(mut config: Configuration) -> Result<(
 		mut keystore_container,
 		select_chain,
 		transaction_pool,
-		other: (rpc_extensions_builder, block_import, grandpa_link, mut telemetry),
+		other: (block_import, grandpa_link, mut telemetry),
 	} = new_partial(&config)?;
 
 	if let Some(url) = &config.keystore_remote {
@@ -221,14 +182,29 @@ pub fn new_full(mut config: Configuration) -> Result<(
 	let enable_grandpa = !config.disable_grandpa;
 	let prometheus_registry = config.prometheus_registry().cloned();
 
-	let rpc_handlers = sc_service::spawn_tasks(
+	let rpc_extensions_builder = {
+		let client = client.clone();
+		let pool = transaction_pool.clone();
+
+		Box::new(move |deny_unsafe, _| {
+			let deps = crate::rpc::FullDeps {
+				client: client.clone(),
+				pool: pool.clone(),
+				deny_unsafe,
+			};
+
+			crate::rpc::create_full(deps)
+		})
+	};
+
+	let _rpc_handlers = sc_service::spawn_tasks(
 		sc_service::SpawnTasksParams {
 			network: network.clone(),
 			client: client.clone(),
 			keystore: keystore_container.sync_keystore(),
 			task_manager: &mut task_manager,
 			transaction_pool: transaction_pool.clone(),
-			rpc_extensions_builder: Box::new(rpc_extensions_builder),
+			rpc_extensions_builder,
 			on_demand: None,
 			remote_blockchain: None,
 			backend,
@@ -331,14 +307,11 @@ pub fn new_full(mut config: Configuration) -> Result<(
 	}
 
 	network_starter.start_network();
-	Ok((task_manager, rpc_handlers))
+	Ok(task_manager)
 }
 
 /// Builds a new service for a light client.
-pub fn new_light(mut config: Configuration) -> Result<(
-	TaskManager,
-	RpcHandlers,
-), ServiceError> {
+pub fn new_light(mut config: Configuration) -> Result<TaskManager, ServiceError> {
 	let telemetry = config.telemetry_endpoints.clone()
 		.filter(|x| !x.is_empty())
 		.map(|endpoints| -> Result<_, sc_telemetry::Error> {
@@ -442,21 +415,12 @@ pub fn new_light(mut config: Configuration) -> Result<(
 		);
 	}
 
-	let light_deps = crate::rpc::LightDeps {
-		remote_blockchain: backend.remote_blockchain(),
-		fetcher: on_demand.clone(),
-		client: client.clone(),
-		pool: transaction_pool.clone(),
-	};
-
-	let rpc_extensions = crate::rpc::create_light(light_deps);
-
-	let rpc_handlers = sc_service::spawn_tasks(sc_service::SpawnTasksParams {
+	sc_service::spawn_tasks(sc_service::SpawnTasksParams {
 		remote_blockchain: Some(backend.remote_blockchain()),
 		transaction_pool,
 		task_manager: &mut task_manager,
 		on_demand: Some(on_demand),
-		rpc_extensions_builder: Box::new(sc_service::NoopRpcExtensionBuilder(rpc_extensions)),
+		rpc_extensions_builder: Box::new(|_, _| ()),
 		config,
 		client,
 		keystore: keystore_container.sync_keystore(),
@@ -467,5 +431,5 @@ pub fn new_light(mut config: Configuration) -> Result<(
 	})?;
 
 	network_starter.start_network();
-	Ok((task_manager, rpc_handlers))
+	Ok(task_manager)
 }

@@ -28,16 +28,12 @@ frame-system-rpc-runtime-api = {default-features = false, version = '3.0.0', git
 pallet-aura = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 pallet-balances = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 pallet-grandpa = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-pallet-offences = { git = "https://github.com/paritytech/substrate", branch = "master", default-features = false }
 pallet-randomness-collective-flip = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 pallet-sudo = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 pallet-scheduler = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 pallet-timestamp = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 pallet-transaction-payment = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 pallet-transaction-payment-rpc-runtime-api = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-pallet-session = { git = "https://github.com/paritytech/substrate", version = '3.0.0', branch = "master", default-features = false }
-pallet-staking = { git = "https://github.com/paritytech/substrate", version = '3.0.0', branch = "master", default-features = false }
-pallet-staking-reward-curve = { package = "pallet-staking-reward-curve", git = "https://github.com/paritytech/substrate", branch = "master" }
 sp-api = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 sp-block-builder = {default-features = false, version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
 sp-consensus-aura = {default-features = false, version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
@@ -84,15 +80,12 @@ std = [
     'pallet-aura/std',
     'pallet-balances/std',
     'pallet-grandpa/std',
-	'pallet-offences/std',
     'pallet-randomness-collective-flip/std',
     'pallet-sudo/std',
     'pallet-timestamp/std',
     'pallet-transaction-payment-rpc-runtime-api/std',
     'pallet-transaction-payment/std',
     'pallet-scheduler/std',
-	'pallet-session/std',
-	'pallet-staking/std',
     'serde',
     'sp-api/std',
     'sp-block-builder/std',
