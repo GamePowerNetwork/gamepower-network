@@ -1,62 +1,175 @@
+[features]
+default = []
+runtime-benchmarks = ['node-template-runtime/runtime-benchmarks']
+
+[build-dependencies.substrate-build-script-utils]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
 [package]
-authors = ['GamePower Devs <https://github.com/GamePowerNetwork>']
+authors = ['Substrate DevHub <https://github.com/substrate-developer-hub>']
 build = 'build.rs'
 description = 'A fresh FRAME-based Substrate node, ready for hacking.'
 edition = '2018'
-homepage = 'https://gamepower.network'
+homepage = 'https://substrate.dev'
 license = 'Unlicense'
-name = 'gamepower'
-repository = 'https://github.com/GamePowerNetwork/gamepower-node/'
-version = '0.0.1'
-
-[[bin]]
-name = 'gamepower'
-
+name = 'node-template'
+repository = 'https://github.com/substrate-developer-hub/substrate-node-template/'
+version = '3.0.0'
 [package.metadata.docs.rs]
 targets = ['x86_64-unknown-linux-gnu']
-
-[build-dependencies]
-substrate-build-script-utils = '3.0.0'
 
 [dependencies]
 jsonrpc-core = '15.1.0'
 structopt = '0.3.8'
-serde_json = "1.0.41"
 
-# Substrate dependencies
-frame-benchmarking = {version = '3.1.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-frame-benchmarking-cli = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-pallet-transaction-payment-rpc = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-basic-authorship = {version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-cli = {features = ['wasmtime'], version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-client-api = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-consensus = {version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-consensus-aura = {version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-executor = {features = ['wasmtime'], version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-finality-grandpa = {version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-keystore = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-rpc = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-rpc-api = {version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-service = {features = ['wasmtime'], version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-telemetry = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-transaction-pool = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-api = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-block-builder = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-blockchain = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-consensus = {version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-consensus-aura = {version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-core = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-finality-grandpa = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-inherents = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-runtime = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-transaction-pool = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sp-timestamp = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-substrate-frame-rpc-system = {version = '3.0.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
-sc-finality-grandpa-warp-sync = {version = '0.9.0', git = 'https://github.com/paritytech/substrate.git', branch = 'master'}
+[dependencies.frame-benchmarking]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.1.0'
 
-# local dependencies
-gamepower-runtime = { path = '../runtime', version = '0.0.1' }
+[dependencies.frame-benchmarking-cli]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
 
-[features]
-default = []
-runtime-benchmarks = ['gamepower-runtime/runtime-benchmarks']
+[dependencies.node-template-runtime]
+path = '../runtime'
+version = '3.0.0'
+
+[dependencies.pallet-transaction-payment-rpc]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sc-basic-authorship]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '0.9.0'
+
+[dependencies.sc-cli]
+features = ['wasmtime']
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '0.9.0'
+
+[dependencies.sc-client-api]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sc-consensus]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '0.9.0'
+
+[dependencies.sc-consensus-aura]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '0.9.0'
+
+[dependencies.sc-executor]
+features = ['wasmtime']
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '0.9.0'
+
+[dependencies.sc-finality-grandpa]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '0.9.0'
+
+[dependencies.sc-keystore]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sc-rpc]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sc-rpc-api]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '0.9.0'
+
+[dependencies.sc-service]
+features = ['wasmtime']
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '0.9.0'
+
+[dependencies.sc-telemetry]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sc-transaction-pool]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sp-api]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sp-block-builder]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sp-blockchain]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sp-consensus]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '0.9.0'
+
+[dependencies.sp-consensus-aura]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '0.9.0'
+
+[dependencies.sp-core]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sp-finality-grandpa]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sp-inherents]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sp-runtime]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sp-timestamp]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.sp-transaction-pool]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[dependencies.substrate-frame-rpc-system]
+git = 'https://github.com/paritytech/substrate.git'
+tag = 'monthly-2021-07'
+version = '3.0.0'
+
+[[bin]]
+name = 'node-template'
