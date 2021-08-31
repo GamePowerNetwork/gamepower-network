@@ -1,0 +1,43 @@
+{
+  "ListingId": "u64",
+  "ClaimId": "u64",
+  "Asset": {
+    "ClassIdOf": "ClassIdOf",
+    "TokenIdOf": "TokenIdOf"
+  },
+  "ListingOf": "Listing",
+  "Listing": {
+    "id": "ListingId",
+    "owner": "AccountId",
+    "asset": "Asset",
+    "price": "Balance"
+  },
+  "OrderOf": "Order",
+  "Order": {
+    "listing": "ListingOf",
+    "buyer": "AccountId",
+    "block": "BlockNumber"
+  },
+  "ClaimOf": "Claim",
+  "Claim": {
+    "receiver": "AccountId",
+    "asset": "Asset"
+  },
+  "WalletClassData": {
+    "metadata": "Vec<u8>"
+  },
+  "WalletAssetData": {
+    "metadata": "Vec<u8>"
+  },
+  "TokenInfo": {
+    "metadata": "Vec<u8>",
+    "owner": "AccountId",
+    "data": "WalletAssetData"
+  },
+  "ClassInfo": {
+    "metadata": "Vec<u8>",
+    "total_issuance": "TokenId",
+    "owner": "AccountId",
+    "data": "WalletClassData"
+  }
+}
