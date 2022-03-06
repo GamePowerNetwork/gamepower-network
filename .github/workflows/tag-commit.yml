@@ -21,4 +21,5 @@ jobs:
           with-v: "true"
           release-branch: main
 
+      - name: Print the new tag
         run: echo ${{ steps.tagger.outputs.new-tag }}
