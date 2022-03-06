@@ -11,8 +11,7 @@ on:
 
 env:
   IMAGE_NAME: gamepower-network
-  IMAGE_ID: ghcr.io/${{ env.REPO_NAME }}/$IMAGE_NAME:${{ github.run_id }}
-  REPO_NAME: gamepowernetwork
+  IMAGE_ID: ghcr.io/gamepowernetwork/gamepower-network:${{ github.run_id }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
