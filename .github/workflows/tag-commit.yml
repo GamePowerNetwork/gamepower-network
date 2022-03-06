@@ -22,7 +22,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
-          INITIAL_VERSION: 0.0.1
+          INITIAL_VERSION: 0.4.1
           REPO_OWNER: GamePowerNetwork
           DEFAULT_BUMP: patch
           VERBOSE: true
