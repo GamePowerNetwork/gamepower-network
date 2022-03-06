@@ -17,8 +17,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: "true"
           WITH_V: "true"
-          RELEASE_BRANCHES: main
-          TAG_CONTEXT: branch
+          INITIAL_VERSION: 0.0.1
 
       - name: Print the new tag
         run: echo ${{ steps.tagger.outputs.new_tag }}
