@@ -17,4 +17,5 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN}}
           dry-run: TRUE
-          with-v: TRUE
+          with-v: "true"
+          release-branch: main
