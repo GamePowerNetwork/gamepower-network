@@ -34,5 +34,5 @@ jobs:
       - name: Psh image to GitHub Container Registry
         run: |
           IMAGE_ID=ghcr.io/${{ env.REPO_NAME }}/$IMAGE_NAME:${{ github.run_id }}
-          docker tag ghcr.io/${{ env.REPO_NAME }}/$IMAGE_NAME
+          docker tag ghcr.io/${{ env.REPO_NAME }}/$IMAGE_NAME:${{ github.run_id }} ghcr.io/${{ env.REPO_NAME }}/$IMAGE_NAME:${{ github.run_id }}
           docker push $IMAGE_ID
