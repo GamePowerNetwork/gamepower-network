@@ -15,7 +15,6 @@ jobs:
         id: tagger
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DRY_RUN: "true"
           WITH_V: "true"
           INITIAL_VERSION: 0.0.1
 
