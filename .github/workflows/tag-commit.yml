@@ -1,0 +1,22 @@
+name: Auto Tag
+
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@master
+        id: tagger
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: "true"
+          INITIAL_VERSION: 0.0.1
+
+      - name: Print the new tag
+        run: echo ${{ steps.tagger.outputs.new_tag }}
