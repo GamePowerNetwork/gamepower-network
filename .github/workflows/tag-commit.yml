@@ -8,6 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.get_version.outputs.VERSION }}
+
     steps:
       - uses: actions/checkout@master
       - name: Bump version and push tag
@@ -17,6 +21,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: "true"
           INITIAL_VERSION: 0.0.1
+          REPO_OWNER: GamePowerNetwork
 
       - name: Print the new tag
         run: echo ${{ steps.tagger.outputs.new_tag }}
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Print the version
+        id: print_version
+        run: echo ${{steps.get_version.outputs.version}}
