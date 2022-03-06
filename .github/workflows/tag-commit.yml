@@ -6,20 +6,19 @@ on:
     branches: [relaunch]
 
 jobs:
-  tag:
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          - 12
     steps:
-      - uses: phish108/autotag-action@1.1.37
+      - uses: actions/checkout@master
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@master
         id: tagger
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN}}
-          dry-run: "true"
-          with-v: "true"
-          release-branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: "true"
+          WITH_V: "true"
+          RELEASE_BRANCHES: main
+          TAG_CONTEXT: branch
 
       - name: Print the new tag
-        run: echo ${{ steps.tagger.outputs.new-tag }}
+        run: echo ${{ steps.tagger.outputs.new_tag }}
