@@ -17,13 +17,15 @@ jobs:
         with:
           fetch-depth: 0
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@master
+        uses: anothrNick/github-tag-action@1.36.0
         id: tagger
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           INITIAL_VERSION: 0.0.1
           REPO_OWNER: GamePowerNetwork
+          DEFAULT_BUMP: patch
+          VERBOSE: true
 
       - name: Print the new tag
         run: echo ${{ steps.tagger.outputs.new_tag }}
