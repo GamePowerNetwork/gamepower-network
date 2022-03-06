@@ -13,12 +13,12 @@ jobs:
         node-version:
           - 12
     steps:
-      id: tagger
-      uses: phish108/autotag-action@1.1.37
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN}}
-        dry-run: TRUE
-        with-v: TRUE
-        release-branch: main
+      - uses: phish108/autotag-action@1.1.37
+        id: tagger
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN}}
+          dry-run: "true"
+          with-v: "true"
+          release-branch: main
 
-      run: echo ${{ steps.tagger.outputs.new-tag }}
+        run: echo ${{ steps.tagger.outputs.new-tag }}
