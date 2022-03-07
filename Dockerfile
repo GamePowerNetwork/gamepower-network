@@ -1,4 +1,7 @@
 FROM ubuntu:18.04
+
+ARG PROFILE=release
+
 RUN apt-get update && apt-get install -y \
     build-essential clang git\
     curl
@@ -8,8 +11,27 @@ ENV PATH="/root/.cargo/bin:$PATH"
 RUN rustup update nightly
 RUN rustup update stable
 RUN rustup target add wasm32-unknown-unknown --toolchain nightly
-COPY . /gamepower-wallet-template
-WORKDIR /gamepower-wallet-template
+COPY . /gamepower
+WORKDIR /gamepower
 RUN cargo +nightly build --release
+
+
+# ===== SECOND STAGE ======
+
+FROM debian:buster-slim
+LABEL description="This is the 2nd stage: a very small image where we copy the GamePower binary."
+ARG PROFILE=release
+COPY --from=builder /gampower/target/$PROFILE/gamepower /usr/local/bin
+
+RUN useradd -m -u 1000 -U -s /bin/sh -d /gamepower gamepower && \
+	mkdir -p /gamepower/.local/share && \
+	mkdir /data && \
+	chown -R gamepower:gamepower /data && \
+	ln -s /data /gamepower/.local/share/gamepower && \
+	rm -rf /usr/bin /usr/sbin
+
+USER gamepower
 EXPOSE 30333 9933 9944 9615
-CMD cargo +nightly run --release -- --dev --tmp --ws-external
+VOLUME ["/data"]
+
+CMD ["/usr/local/bin/gamepower"]
