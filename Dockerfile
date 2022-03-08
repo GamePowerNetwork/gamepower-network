@@ -11,9 +11,11 @@ ENV PATH="/root/.cargo/bin:$PATH"
 RUN rustup update nightly
 RUN rustup update stable
 RUN rustup target add wasm32-unknown-unknown --toolchain nightly
+
 COPY . /gamepower
 WORKDIR /gamepower
-RUN cargo +nightly build --release
+
+RUN cargo +nightly build --$PROFILE
 
 
 # ===== SECOND STAGE ======
