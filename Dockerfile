@@ -30,9 +30,10 @@ RUN useradd -m -u 1000 -U -s /bin/sh -d /gamepower gamepower && \
 	mkdir /data && \
 	chown -R gamepower:gamepower /data && \
 	ln -s /data /gamepower/.local/share/gamepower && \
-	rm -rf /usr/bin /usr/sbin
+	rm -rf /usr/bin /usr/sbin && \
+  /usr/local/bin/gamepower-network --version
 
-USER gamepower
+USER root
 EXPOSE 30333 9933 9944 9615
 VOLUME ["/data"]
 
