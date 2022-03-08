@@ -23,7 +23,7 @@ RUN cargo +nightly build --$PROFILE
 FROM debian:buster-slim
 LABEL description="This is the 2nd stage: a very small image where we copy the GamePower binary."
 ARG PROFILE=release
-COPY --from=builder /gamepower/target/$PROFILE/gamepower /usr/local/bin
+COPY --from=builder /gamepower/target/$PROFILE/gamepower-network /usr/local/bin
 
 RUN useradd -m -u 1000 -U -s /bin/sh -d /gamepower gamepower && \
 	mkdir -p /gamepower/.local/share && \
@@ -36,4 +36,4 @@ USER gamepower
 EXPOSE 30333 9933 9944 9615
 VOLUME ["/data"]
 
-CMD ["/usr/local/bin/gamepower"]
+CMD ["/usr/local/bin/gamepower-network"]
