@@ -37,4 +37,4 @@ USER root
 EXPOSE 30333 9933 9944 9615
 VOLUME ["/data"]
 
-CMD ["/usr/local/bin/gamepower-network"]
+ENTRYPOINT ["/usr/local/bin/gamepower-network"]
