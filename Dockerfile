@@ -17,7 +17,6 @@ WORKDIR /gamepower
 
 RUN cargo build --$PROFILE
 
-
 # ===== SECOND STAGE ======
 
 FROM debian:buster-slim
